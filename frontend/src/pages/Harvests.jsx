@@ -9,8 +9,6 @@ import { plantingsApi } from "../api/plantings";
 function HarvestForm({ fields, plantings, onSubmit, loading, onCancel }) {
   const [form, setForm] = useState({ planting_id: "", field_id: "", harvest_date: "", total_amount: "", unit: "kg", quality_grade: "", notes: "" });
 
-  const selectedPlanting = plantings.find(p => p.id === form.planting_id);
-
   return (
     <div className="card space-y-3">
       <h3 className="text-sm font-semibold text-gray-900">Hasat Kaydı</h3>

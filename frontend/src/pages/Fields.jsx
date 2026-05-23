@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { MapContainer, TileLayer, Polygon, Tooltip } from "react-leaflet";
 import DrawControl from "../components/map/DrawControl";
 import toast from "react-hot-toast";
-import { Plus, Trash2, Map } from "lucide-react";
+import { Trash2, Map } from "lucide-react";
 import { fieldsApi } from "../api/fields";
 import "leaflet/dist/leaflet.css";
 

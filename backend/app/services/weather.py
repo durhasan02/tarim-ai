@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta, timezone
-
 import httpx
 
 from app.core.config import settings

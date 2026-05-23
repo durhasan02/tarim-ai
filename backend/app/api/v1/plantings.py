@@ -53,7 +53,7 @@ async def get_irrigation(planting_id: uuid.UUID, current_user: CurrentUser, db: 
     if not planting:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ekim bulunamadı")
     logs = await planting_service.get_irrigation_logs(db, planting_id)
-    data = [IrrigationResponse.model_validate(l).model_dump() for l in logs]
+    data = [IrrigationResponse.model_validate(log).model_dump() for log in logs]
     return paginated(data, page=1, per_page=len(data), total=len(data))
 
 
