@@ -1,0 +1,56 @@
+# Ortam değişkenleri
+.env
+.env.prod
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+
+# Node
+node_modules/
+dist/
+.dist/
+frontend/dist/
+
+# AI modelleri (büyük dosyalar)
+ai-models/**/*.onnx
+ai-models/**/*.pkl
+ai-models/**/*.pt
+ai-models/**/*.pth
+ai-models/data/
+ai-models/**/data/
+
+# Medya dosyaları
+media/
+
+# IDE
+.vscode/
+.idea/
+
+# Claude Code
+.claude/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.log
+
+# Alembic
+backend/alembic/versions/*.pyc

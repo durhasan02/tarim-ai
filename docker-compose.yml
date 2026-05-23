@@ -1,0 +1,82 @@
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    container_name: tarim_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-tarim_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tarim_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-tarim_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tarim_user} -d ${POSTGRES_DB:-tarim_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: tarim_redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tarim_backend
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-tarim_user}:${POSTGRES_PASSWORD:-tarim_pass}@postgres:5432/${POSTGRES_DB:-tarim_db}
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./media:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  ai-service:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: tarim_ai
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./ai-service:/app
+      - ./ai-service/models:/app/models
+    environment:
+      MODEL_DIR: /app/models
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: tarim_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      VITE_API_URL: http://backend:8000
+    depends_on:
+      - backend
+    command: npm run dev -- --host
+
+volumes:
+  postgres_data:
